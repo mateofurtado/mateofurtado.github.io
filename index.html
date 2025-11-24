@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informes Financieros</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background-color: #f4f4f9; color: #333; }
+        h1 { color: #2c3e50; border-bottom: 2px solid #2c3e50; padding-bottom: 10px; }
+        .report-card { background: white; padding: 15px; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; }
+        .report-info h3 { margin: 0 0 5px 0; font-size: 1.1rem; }
+        .report-date { color: #7f8c8d; font-size: 0.9rem; }
+        .btn-download { background-color: #27ae60; color: white; text-decoration: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; transition: background 0.3s; }
+        .btn-download:hover { background-color: #219150; }
+    </style>
+</head>
+<body>
+
+    <h1>Informes Financieros Públicos</h1>
+    <div id="lista-informes"></div>
+
+    <script>
+        const informes = [
+            { nombre: "Informe Q3 2023.pdf", fecha: "2023-10-01", url: "documentos/informe_q3_2023.pdf" },
+            { nombre: "Balance General 2024.pdf", fecha: "2024-01-15", url: "documentos/balance_2024.pdf" },
+            { nombre: "Reporte Mensual Febrero.pdf", fecha: "2024-02-20", url: "documentos/feb_2024.pdf" }
+        ];
+
+        informes.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+
+        const contenedor = document.getElementById('lista-informes');
+
+        informes.forEach(informe => {
+            const card = document.createElement('div');
+            card.className = 'report-card';
+            card.innerHTML = `
+                <div class="report-info">
+                    <h3>${informe.nombre}</h3>
+                    <span class="report-date">Publicado: ${informe.fecha}</span>
+                </div>
+                <a href="${informe.url}" class="btn-download" target="_blank" download>Descargar PDF</a>
+            `;
+            contenedor.appendChild(card);
+        });
+    </script>
+
+</body>
+</html>
