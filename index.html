@@ -15,12 +15,12 @@
             min-height: 100vh;
         }
 
-        /* --- BARRA SUPERIOR (NUEVO) --- */
         .top-bar {
             background-color: #fff;
             padding: 15px 20px;
             display: flex;
             align-items: center;
+            justify-content: space-between;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
@@ -50,7 +50,35 @@
             color: white;
         }
 
-        /* --- CONTENEDOR PRINCIPAL --- */
+        .market-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: #333;
+            background-color: #f8f9fa;
+            padding: 6px 15px;
+            border-radius: 20px;
+            border: 1px solid #eee;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #95a5a6;
+        }
+
+        .status-dot.open {
+            background-color: #27ae60;
+            box-shadow: 0 0 5px #27ae60;
+        }
+
+        .status-dot.closed {
+            background-color: #c0392b;
+        }
+
         .container {
             max-width: 900px;
             margin: 0 auto;
@@ -68,7 +96,6 @@
             text-align: center;
         }
 
-        /* --- LISTAS --- */
         .list-container {
             display: none;
             animation: fadeIn 0.5s;
@@ -129,7 +156,6 @@
             background-color: #004494;
         }
 
-        /* --- VISOR PDF --- */
         #visor-container {
             display: none;
             margin-top: 30px;
@@ -154,7 +180,6 @@
             background-color: #eee;
         }
 
-        /* --- FOOTER CON FECHA --- */
         .site-footer {
             background-color: #003366;
             color: white;
@@ -162,7 +187,7 @@
             font-weight: bold;
             font-size: 1rem;
             display: flex;
-            justify-content: space-between; /* Separa nombre y fecha */
+            justify-content: space-between;
             align-items: center;
         }
 
@@ -170,6 +195,10 @@
             .site-footer {
                 flex-direction: column;
                 gap: 10px;
+            }
+            .top-bar {
+                flex-direction: column;
+                gap: 15px;
             }
         }
     </style>
@@ -180,6 +209,11 @@
         <div class="lang-buttons">
             <button class="lang-btn active" onclick="cambiarIdioma('es')" id="btn-es">Español</button>
             <button class="lang-btn" onclick="cambiarIdioma('en')" id="btn-en">English</button>
+        </div>
+        
+        <div class="market-status">
+            <span class="status-dot" id="market-dot"></span>
+            <span id="market-text">NYSE: ...</span>
         </div>
     </div>
 
@@ -206,10 +240,6 @@
     </footer>
 
     <script>
-        // ==========================================
-        // DATOS
-        // ==========================================
-        
         const informesES = [
             { nombre: "Reporte de Crédito 3.0", fecha: "2025-11-24", url: "CREDITO 3.0.pdf" }
         ];
@@ -218,11 +248,48 @@
             { nombre: "Credit Report 3.0", fecha: "2025-11-24", url: "CREDITO 3.0.pdf" }
         ];
 
-        // ==========================================
-        // LÓGICA
-        // ==========================================
+        let currentLang = 'es';
+
+        function checkMarketStatus() {
+            const now = new Date();
+            const nyTimeStr = now.toLocaleString("en-US", {timeZone: "America/New_York"});
+            const nyTime = new Date(nyTimeStr);
+            
+            const day = nyTime.getDay();
+            const hour = nyTime.getHours();
+            const minute = nyTime.getMinutes();
+            const totalMinutes = hour * 60 + minute;
+            
+            const openTime = 9 * 60 + 30;
+            const closeTime = 16 * 60;
+            
+            let isOpen = false;
+
+            if (day >= 1 && day <= 5) {
+                if (totalMinutes >= openTime && totalMinutes < closeTime) {
+                    isOpen = true;
+                }
+            }
+
+            const dot = document.getElementById('market-dot');
+            const text = document.getElementById('market-text');
+            
+            const labelOpen = currentLang === 'es' ? 'Abierto' : 'Open';
+            const labelClosed = currentLang === 'es' ? 'Cerrado' : 'Closed';
+
+            if (isOpen) {
+                dot.className = 'status-dot open';
+                text.innerText = `NYSE: ${labelOpen}`;
+                text.style.color = '#27ae60';
+            } else {
+                dot.className = 'status-dot closed';
+                text.innerText = `NYSE: ${labelClosed}`;
+                text.style.color = '#c0392b';
+            }
+        }
 
         function cambiarIdioma(idioma) {
+            currentLang = idioma;
             const contES = document.getElementById('contenedor-es');
             const contEN = document.getElementById('contenedor-en');
             const btnES = document.getElementById('btn-es');
@@ -237,14 +304,15 @@
                 contEN.classList.remove('active');
                 btnES.classList.add('active');
                 btnEN.classList.remove('active');
-                titulo.innerText = "Informes Financieros y Económicos"; // Título Español
+                titulo.innerText = "Informes Financieros y Económicos";
             } else {
                 contEN.classList.add('active');
                 contES.classList.remove('active');
                 btnEN.classList.add('active');
                 btnES.classList.remove('active');
-                titulo.innerText = "Financial and Economic Reports"; // Título Inglés
+                titulo.innerText = "Financial and Economic Reports";
             }
+            checkMarketStatus();
         }
 
         function formatearFecha(fechaISO) {
@@ -283,7 +351,6 @@
             });
         }
 
-        // RELOJ
         function actualizarReloj() {
             const ahora = new Date();
             const opciones = { 
@@ -296,9 +363,11 @@
                 second: '2-digit' 
             };
             document.getElementById('reloj-vivo').innerText = ahora.toLocaleDateString('es-ES', opciones);
+            checkMarketStatus();
         }
+
         setInterval(actualizarReloj, 1000);
-        actualizarReloj(); // Ejecutar inmediatamente
+        actualizarReloj();
 
         renderizarLista(informesES, 'lista-espanol', 'Ver Informe');
         renderizarLista(informesEN, 'lista-ingles', 'View Report');
