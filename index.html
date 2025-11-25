@@ -5,37 +5,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mateo Furtado - Portfolio</title>
     <style>
+        /* --- VARIABLES DE COLORES (TEMAS) --- */
+        :root {
+            --bg-body: #f0f2f5;
+            --text-main: #333;
+            --text-secondary: #666;
+            --card-bg: #ffffff;
+            --primary-color: #003366;
+            --accent-color: #0056b3;
+            --border-color: #ddd;
+            --pill-bg: #f8f9fa;
+            --pill-border: #e1e4e8;
+            --pill-text: #555;
+            --shadow: 0 4px 12px rgba(0,0,0,0.05);
+            --topbar-bg: #ffffff;
+        }
+
+        /* Variables para MODO OSCURO */
+        body.dark-mode {
+            --bg-body: #121212;
+            --text-main: #e0e0e0;
+            --text-secondary: #aaaaaa;
+            --card-bg: #1e1e1e;
+            --primary-color: #64b5f6; /* Azul más claro para contraste */
+            --accent-color: #2196f3;
+            --border-color: #333;
+            --pill-bg: #2d2d2d;
+            --pill-border: #444;
+            --pill-text: #ccc;
+            --shadow: 0 4px 12px rgba(0,0,0,0.3);
+            --topbar-bg: #1e1e1e;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
-            color: #333;
+            background-color: var(--bg-body);
+            color: var(--text-main);
             margin: 0;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            transition: background-color 0.3s, color 0.3s;
         }
 
         /* --- BARRA SUPERIOR --- */
         .top-bar {
-            background-color: #fff;
+            background-color: var(--topbar-bg);
             padding: 10px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             flex-wrap: wrap;
             gap: 15px;
+            transition: background-color 0.3s;
         }
 
         .left-section {
             display: flex;
             gap: 10px;
+            align-items: center;
         }
 
         .lang-btn {
-            border: 2px solid #003366;
+            border: 2px solid var(--primary-color);
             background: transparent;
-            color: #003366;
+            color: var(--primary-color);
             padding: 5px 15px;
             border-radius: 20px;
             cursor: pointer;
@@ -45,15 +80,35 @@
         }
 
         .lang-btn:hover {
-            background-color: #e6efff;
+            background-color: rgba(0, 51, 102, 0.1);
         }
 
         .lang-btn.active {
-            background-color: #003366;
-            color: white;
+            background-color: var(--primary-color);
+            color: var(--topbar-bg); /* Invertido para contraste */
         }
 
-        /* --- MERCADOS (GRID MEJORADO PARA MUCHOS ITEMS) --- */
+        /* Botón Modo Oscuro */
+        .theme-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-main);
+        }
+        .theme-btn:hover {
+            background-color: rgba(0,0,0,0.1);
+        }
+        body.dark-mode .theme-btn:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        /* --- MERCADOS --- */
         .markets-grid {
             display: flex;
             gap: 8px;
@@ -65,13 +120,15 @@
             display: flex;
             align-items: center;
             gap: 5px;
-            font-size: 0.7rem; /* Un poco más pequeño para que entren todos */
+            font-size: 0.7rem;
             font-weight: bold;
-            background-color: #f8f9fa;
+            background-color: var(--pill-bg);
             padding: 4px 8px;
             border-radius: 12px;
-            border: 1px solid #e1e4e8;
+            border: 1px solid var(--pill-border);
+            color: var(--pill-text);
             white-space: nowrap;
+            transition: background-color 0.3s, border-color 0.3s, color 0.3s;
         }
 
         .status-dot {
@@ -80,18 +137,10 @@
             border-radius: 50%;
             background-color: #bdc3c7;
         }
-
-        .status-dot.open {
-            background-color: #27ae60;
-            box-shadow: 0 0 4px #27ae60;
-        }
-
-        .status-dot.closed {
-            background-color: #c0392b;
-        }
+        .status-dot.open { background-color: #27ae60; box-shadow: 0 0 4px #27ae60; }
+        .status-dot.closed { background-color: #c0392b; }
 
         .market-name {
-            color: #555;
             text-transform: uppercase;
         }
 
@@ -106,57 +155,71 @@
         }
 
         h1 {
-            color: #003366;
-            border-bottom: 3px solid #003366;
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
             padding-bottom: 15px;
             margin-top: 10px;
             text-align: center;
         }
 
-        .list-container {
-            display: none;
+        /* --- BUSCADOR --- */
+        .search-container {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
         }
 
-        .list-container.active {
-            display: block;
-            animation: fadeIn 0.5s;
+        .search-input {
+            width: 100%;
+            max-width: 500px;
+            padding: 12px 20px;
+            font-size: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
+            background-color: var(--card-bg);
+            color: var(--text-main);
+            box-shadow: var(--shadow);
+            outline: none;
+            transition: all 0.3s;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .search-input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 8px rgba(0, 86, 179, 0.2);
         }
+
+        /* --- LISTAS --- */
+        .list-container { display: none; }
+        .list-container.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .report-card {
-            background: white;
+            background: var(--card-bg);
             padding: 20px;
             margin-bottom: 15px;
             border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            box-shadow: var(--shadow);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-left: 5px solid #004080;
-            transition: transform 0.2s;
+            border-left: 5px solid var(--primary-color);
+            transition: transform 0.2s, background-color 0.3s;
         }
-
-        .report-card:hover {
-            transform: translateY(-2px);
-        }
+        .report-card:hover { transform: translateY(-2px); }
 
         .report-info h3 {
             margin: 0 0 5px 0;
             font-size: 1.1rem;
-            color: #004080;
+            color: var(--primary-color);
         }
 
         .report-date {
-            color: #666;
+            color: var(--text-secondary);
             font-size: 0.9rem;
         }
 
         .btn-view {
-            background-color: #0056b3;
+            background-color: var(--accent-color);
             color: white;
             border: none;
             cursor: pointer;
@@ -165,28 +228,23 @@
             font-weight: bold;
             transition: background 0.3s;
         }
-
-        .btn-view:hover {
-            background-color: #004494;
-        }
+        .btn-view:hover { opacity: 0.9; }
 
         /* --- VISOR --- */
         #visor-container {
             display: none;
             margin-top: 30px;
-            background: white;
+            background: var(--card-bg);
             padding: 10px;
             border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.2);
-            border: 1px solid #ddd;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
         }
-
         #titulo-visor {
-            color: #003366;
+            color: var(--primary-color);
             margin: 10px 0;
             padding-left: 10px;
         }
-
         iframe {
             width: 100%;
             height: 700px;
@@ -196,24 +254,23 @@
 
         /* --- FOOTER --- */
         .site-footer {
-            background-color: #003366;
-            color: white;
+            background-color: var(--topbar-bg);
+            color: var(--text-main);
+            border-top: 1px solid var(--border-color);
             padding: 15px 40px;
             font-weight: bold;
             font-size: 0.9rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: background-color 0.3s, color 0.3s;
         }
 
         @media (max-width: 900px) {
-            .top-bar {
-                flex-direction: column;
-                align-items: center;
-            }
-            .markets-grid {
-                justify-content: center;
-            }
+            .top-bar { flex-direction: column; align-items: center; }
+            .markets-grid { justify-content: center; }
+            .report-card { flex-direction: column; text-align: center; gap: 15px; }
+            .report-card { border-left: none; border-top: 5px solid var(--primary-color); }
         }
     </style>
 </head>
@@ -223,54 +280,27 @@
         <div class="left-section">
             <button class="lang-btn active" onclick="cambiarIdioma('es')" id="btn-es">Español</button>
             <button class="lang-btn" onclick="cambiarIdioma('en')" id="btn-en">English</button>
+            <button class="theme-btn" onclick="toggleTheme()" id="theme-icon" title="Cambiar Tema">☀️</button>
         </div>
 
         <div class="markets-grid">
-            <div class="market-pill">
-                <span class="status-dot" id="dot-nyse"></span>
-                <span class="market-name">NYSE</span>
-                <span id="status-nyse">...</span>
-            </div>
-             <div class="market-pill">
-                <span class="status-dot" id="dot-nasdaq"></span>
-                <span class="market-name">NASDAQ</span>
-                <span id="status-nasdaq">...</span>
-            </div>
-            <div class="market-pill">
-                <span class="status-dot" id="dot-lse"></span>
-                <span class="market-name">LSE</span>
-                <span id="status-lse">...</span>
-            </div>
-            <div class="market-pill">
-                <span class="status-dot" id="dot-dax"></span>
-                <span class="market-name">GER</span>
-                <span id="status-dax">...</span>
-            </div>
-             <div class="market-pill">
-                <span class="status-dot" id="dot-ibex"></span>
-                <span class="market-name">ESP</span>
-                <span id="status-ibex">...</span>
-            </div>
-             <div class="market-pill">
-                <span class="status-dot" id="dot-b3"></span>
-                <span class="market-name">BRA</span>
-                <span id="status-b3">...</span>
-            </div>
-            <div class="market-pill">
-                <span class="status-dot" id="dot-jpx"></span>
-                <span class="market-name">JPX</span>
-                <span id="status-jpx">...</span>
-            </div>
-            <div class="market-pill">
-                <span class="status-dot" id="dot-sse"></span>
-                <span class="market-name">SSE</span>
-                <span id="status-sse">...</span>
-            </div>
+            <div class="market-pill"><span class="status-dot" id="dot-nyse"></span><span class="market-name">NYSE</span><span id="status-nyse">...</span></div>
+            <div class="market-pill"><span class="status-dot" id="dot-nasdaq"></span><span class="market-name">NASDAQ</span><span id="status-nasdaq">...</span></div>
+            <div class="market-pill"><span class="status-dot" id="dot-lse"></span><span class="market-name">LSE</span><span id="status-lse">...</span></div>
+            <div class="market-pill"><span class="status-dot" id="dot-dax"></span><span class="market-name">GER</span><span id="status-dax">...</span></div>
+            <div class="market-pill"><span class="status-dot" id="dot-ibex"></span><span class="market-name">ESP</span><span id="status-ibex">...</span></div>
+            <div class="market-pill"><span class="status-dot" id="dot-b3"></span><span class="market-name">BRA</span><span id="status-b3">...</span></div>
+            <div class="market-pill"><span class="status-dot" id="dot-jpx"></span><span class="market-name">JPX</span><span id="status-jpx">...</span></div>
+            <div class="market-pill"><span class="status-dot" id="dot-sse"></span><span class="market-name">SSE</span><span id="status-sse">...</span></div>
         </div>
     </div>
 
     <div class="container">
         <h1 id="main-title">Informes Financieros y Económicos</h1>
+
+        <div class="search-container">
+            <input type="text" id="search-input" class="search-input" placeholder="Buscar informe..." onkeyup="filtrarInformes()">
+        </div>
 
         <div id="contenedor-es" class="list-container active">
             <div id="lista-espanol"></div>
@@ -306,68 +336,72 @@
         let currentLang = 'es';
 
         // ==========================================
-        // 2. LÓGICA DE MERCADOS
+        // 2. BUSCADOR
         // ==========================================
-        
+        function filtrarInformes() {
+            const input = document.getElementById('search-input').value.toLowerCase();
+            const activeContainerId = currentLang === 'es' ? 'lista-espanol' : 'lista-ingles';
+            const cards = document.getElementById(activeContainerId).getElementsByClassName('report-card');
+
+            for (let i = 0; i < cards.length; i++) {
+                const title = cards[i].getElementsByTagName("h3")[0];
+                const txtValue = title.textContent || title.innerText;
+                if (txtValue.toLowerCase().indexOf(input) > -1) {
+                    cards[i].style.display = "";
+                } else {
+                    cards[i].style.display = "none";
+                }
+            }
+        }
+
+        // ==========================================
+        // 3. MODO OSCURO / CLARO
+        // ==========================================
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const icon = document.getElementById('theme-icon');
+            if (document.body.classList.contains('dark-mode')) {
+                icon.innerText = '🌙'; // Luna
+            } else {
+                icon.innerText = '☀️'; // Sol
+            }
+        }
+
+        // ==========================================
+        // 4. LÓGICA DE MERCADOS
+        // ==========================================
         function getMarketStatus(timeZone, intervals) {
             try {
                 const now = new Date();
                 const formatter = new Intl.DateTimeFormat('en-US', {
-                    timeZone: timeZone,
-                    hour: 'numeric',
-                    minute: 'numeric',
-                    hour12: false,
-                    weekday: 'short'
+                    timeZone: timeZone, hour: 'numeric', minute: 'numeric', hour12: false, weekday: 'short'
                 });
-                
                 const parts = formatter.formatToParts(now);
                 const hour = parseInt(parts.find(p => p.type === 'hour').value);
                 const minute = parseInt(parts.find(p => p.type === 'minute').value);
                 const weekday = parts.find(p => p.type === 'weekday').value;
 
                 if (weekday === 'Sat' || weekday === 'Sun') return false;
-
                 const currentMinutes = hour * 60 + minute;
                 
                 for (let interval of intervals) {
-                    if (currentMinutes >= interval[0] && currentMinutes < interval[1]) {
-                        return true;
-                    }
+                    if (currentMinutes >= interval[0] && currentMinutes < interval[1]) return true;
                 }
                 return false;
-
-            } catch (e) {
-                console.error("Error calculando mercado:", timeZone, e);
-                return false;
-            }
+            } catch (e) { return false; }
         }
 
         function updateMarkets() {
-            // -- DEFINICIÓN DE HORARIOS (Hora * 60 + Minutos) --
-
-            // USA (NYSE & NASDAQ): 09:30 - 16:00
             const usaOpen = getMarketStatus('America/New_York', [[9*60+30, 16*60]]);
-            
-            // UK (LSE): 08:00 - 16:30
             const lseOpen = getMarketStatus('Europe/London', [[8*60, 16*60+30]]);
-            
-            // ALEMANIA (Frankfurt/Xetra): 09:00 - 17:30
             const daxOpen = getMarketStatus('Europe/Berlin', [[9*60, 17*60+30]]);
-            
-            // ESPAÑA (BME): 09:00 - 17:30
             const ibexOpen = getMarketStatus('Europe/Madrid', [[9*60, 17*60+30]]);
-            
-            // BRASIL (B3): 10:00 - 17:00 (Aprox, varía con horario verano)
             const b3Open = getMarketStatus('America/Sao_Paulo', [[10*60, 17*60]]);
-            
-            // JAPON: 09:00 - 11:30 Y 12:30 - 15:00
             const jpxOpen = getMarketStatus('Asia/Tokyo', [[9*60, 11*60+30], [12*60+30, 15*60]]);
-            
-            // CHINA: 09:30 - 11:30 Y 13:00 - 15:00
             const sseOpen = getMarketStatus('Asia/Shanghai', [[9*60+30, 11*60+30], [13*60, 15*60]]);
 
             renderMarketUI('nyse', usaOpen);
-            renderMarketUI('nasdaq', usaOpen); // Mismo horario que NYSE
+            renderMarketUI('nasdaq', usaOpen);
             renderMarketUI('lse', lseOpen);
             renderMarketUI('dax', daxOpen);
             renderMarketUI('ibex', ibexOpen);
@@ -379,7 +413,6 @@
         function renderMarketUI(id, isOpen) {
             const dot = document.getElementById(`dot-${id}`);
             const text = document.getElementById(`status-${id}`);
-            
             const labelOpen = currentLang === 'es' ? 'Abierto' : 'Open';
             const labelClosed = currentLang === 'es' ? 'Cerrado' : 'Closed';
 
@@ -394,11 +427,9 @@
             }
         }
 
-
         // ==========================================
-        // 3. FUNCIONES GENERALES
+        // 5. GENERALES
         // ==========================================
-
         function cambiarIdioma(idioma) {
             currentLang = idioma;
             const contES = document.getElementById('contenedor-es');
@@ -406,8 +437,10 @@
             const btnES = document.getElementById('btn-es');
             const btnEN = document.getElementById('btn-en');
             const titulo = document.getElementById('main-title');
+            const searchInput = document.getElementById('search-input');
             
             document.getElementById('visor-container').style.display = 'none';
+            searchInput.value = ''; // Limpiar búsqueda al cambiar idioma
 
             if (idioma === 'es') {
                 contES.classList.add('active');
@@ -415,20 +448,20 @@
                 btnES.classList.add('active');
                 btnEN.classList.remove('active');
                 titulo.innerText = "Informes Financieros y Económicos";
+                searchInput.placeholder = "Buscar informe...";
             } else {
                 contEN.classList.add('active');
                 contES.classList.remove('active');
                 btnEN.classList.add('active');
                 btnES.classList.remove('active');
                 titulo.innerText = "Financial and Economic Reports";
+                searchInput.placeholder = "Search report...";
             }
             
-            // IMPORTANTISIMO: Re-renderizar las listas para cambiar "Publicado" a "Published"
             renderizarLista(informesES, 'lista-espanol', 'Ver Informe');
             renderizarLista(informesEN, 'lista-ingles', 'View Report');
-
             updateMarkets();
-            actualizarReloj(); // Forzar actualización del reloj para el formato fecha del footer
+            actualizarReloj();
         }
 
         function formatearFecha(fechaISO) {
@@ -440,7 +473,6 @@
             const visor = document.getElementById('visor-container');
             const frame = document.getElementById('pdf-frame');
             const tituloVisor = document.getElementById('titulo-visor');
-            
             visor.style.display = "block";
             frame.src = url;
             tituloVisor.innerText = nombre;
@@ -452,8 +484,6 @@
                 lista.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
                 const contenedor = document.getElementById(contenedorID);
                 contenedor.innerHTML = ""; 
-                
-                // Aquí definimos la palabra clave según el idioma actual
                 const labelFecha = currentLang === 'es' ? 'Publicado' : 'Published';
                 
                 lista.forEach(informe => {
@@ -470,36 +500,24 @@
                     `;
                     contenedor.appendChild(card);
                 });
-            } catch (e) {
-                console.error("Error renderizando lista:", e);
-            }
+                filtrarInformes(); // Re-aplicar filtro si hubiera texto
+            } catch (e) { console.error(e); }
         }
 
         function actualizarReloj() {
             try {
                 const ahora = new Date();
-                const opciones = { 
-                    weekday: 'short', year: 'numeric', month: 'numeric', day: 'numeric', 
-                    hour: '2-digit', minute: '2-digit', second: '2-digit' 
-                };
+                const opciones = { weekday: 'short', year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
                 document.getElementById('reloj-vivo').innerText = ahora.toLocaleDateString(currentLang === 'es' ? 'es-ES' : 'en-US', opciones);
-                
                 updateMarkets();
-            } catch (e) {
-                console.error("Error en reloj:", e);
-            }
+            } catch (e) { console.error(e); }
         }
 
-        // ==========================================
-        // 4. INICIALIZACIÓN
-        // ==========================================
-        
+        // Inicialización
         renderizarLista(informesES, 'lista-espanol', 'Ver Informe');
         renderizarLista(informesEN, 'lista-ingles', 'View Report');
-        
         setInterval(actualizarReloj, 1000);
         actualizarReloj();
-
     </script>
 
 </body>
