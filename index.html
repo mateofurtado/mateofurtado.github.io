@@ -199,7 +199,7 @@
         
         .search-container {
             margin-bottom: 20px;
-            display: flex;
+            display: none; /* Oculto por defecto, JS lo muestra con Informes */
             justify-content: center;
         }
 
@@ -303,10 +303,11 @@
         }
         
         /* --- ESTILOS TOP TEN --- */
-        #top-ten-list {
+        #top-ten-view {
+            display: none;
             margin-top: 20px;
         }
-        
+
         .top-ten-table {
             width: 100%;
             border-collapse: collapse;
@@ -401,8 +402,8 @@
 
     <div class="top-bar">
         <div class="left-section">
-            <button class="lang-btn active" onclick="cambiarIdioma('es')" id="btn-es">Español</button>
-            <button class="lang-btn" onclick="cambiarIdioma('en')" id="btn-en">English</button>
+            <button class="lang-btn active" onclick="showReports('es')" id="btn-es">Español</button>
+            <button class="lang-btn" onclick="showReports('en')" id="btn-en">English</button>
             
             <button class="top-ten-btn" onclick="showTopTen()" id="btn-top-ten">Top Ten</button>
 
@@ -434,12 +435,17 @@
         </div>
 
         <div id="main-content-area">
-            <div id="contenedor-es" class="list-container active">
-                <div id="lista-espanol"></div>
-            </div>
+            <div id="reports-view">
+                <div id="contenedor-es" class="list-container active">
+                    <div id="lista-espanol"></div>
+                </div>
 
-            <div id="contenedor-en" class="list-container">
-                <div id="lista-ingles"></div>
+                <div id="contenedor-en" class="list-container">
+                    <div id="lista-ingles"></div>
+                </div>
+            </div>
+            
+            <div id="top-ten-view">
             </div>
         </div>
         
@@ -499,26 +505,6 @@
         };
 
         let currentLang = 'es';
-        
-        function setContentVisibility(showReports) {
-            document.getElementById('contenedor-es').style.display = 'none';
-            document.getElementById('contenedor-en').style.display = 'none';
-            document.getElementById('search-input').style.display = showReports ? 'block' : 'none';
-            document.getElementById('visor-container').style.display = 'none';
-
-            document.getElementById('btn-top-ten').classList.toggle('active', !showReports);
-            document.getElementById('btn-es').classList.toggle('active', showReports && currentLang === 'es');
-            document.getElementById('btn-en').classList.toggle('active', showReports && currentLang === 'en');
-            
-            // Renderizar contenido activo
-            if (showReports) {
-                document.getElementById(currentLang === 'es' ? 'contenedor-es' : 'contenedor-en').style.display = 'block';
-                document.getElementById('main-content-area').innerHTML = '';
-                document.getElementById('main-content-area').appendChild(document.getElementById(currentLang === 'es' ? 'contenedor-es' : 'contenedor-en'));
-            } else {
-                renderTopTenList();
-            }
-        }
         
         function filtrarInformes() {
             const input = document.getElementById('search-input').value.toLowerCase();
@@ -597,75 +583,55 @@
             }
         }
 
-        function cambiarIdioma(idioma) {
-            currentLang = idioma;
-            const titulo = document.getElementById('main-title');
-            const searchInput = document.getElementById('search-input');
+        function showTopTen() {
+            currentLang = document.getElementById('btn-es').classList.contains('active') ? 'es' : 'en';
             
-            if (idioma === 'es') {
-                titulo.innerText = "Informes Financieros y Económicos";
-                searchInput.placeholder = "Buscar informe...";
-            } else {
-                titulo.innerText = "Financial and Economic Reports";
-                searchInput.placeholder = "Search report...";
-            }
+            document.getElementById('reports-view').style.display = 'none';
+            document.getElementById('top-ten-view').style.display = 'block';
+            document.getElementById('search-input').style.display = 'none';
+            document.getElementById('visor-container').style.display = 'none';
+
+            document.getElementById('btn-top-ten').classList.add('active');
+            document.getElementById('btn-es').classList.remove('active');
+            document.getElementById('btn-en').classList.remove('active');
+
+            renderTopTenList();
             
-            if (document.getElementById('btn-top-ten').classList.contains('active')) {
-                showTopTen(); 
-            } else {
-                showContentVisibility(true);
-                renderizarLista(informesES, 'lista-espanol', 'Ver Informe');
-                renderizarLista(informesEN, 'lista-ingles', 'View Report');
-            }
+            document.getElementById('main-title').innerText = currentLang === 'es' ? 'Top 10 Global' : 'Global Top 10';
+        }
+
+        function showReports(lang) {
+            currentLang = lang;
             
+            document.getElementById('reports-view').style.display = 'block';
+            document.getElementById('top-ten-view').style.display = 'none';
+            document.getElementById('search-input').style.display = 'block';
+            document.getElementById('visor-container').style.display = 'none';
+
+            document.getElementById('btn-top-ten').classList.remove('active');
+            
+            // Actualizar botones de idioma
+            document.getElementById('btn-es').classList.toggle('active', lang === 'es');
+            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+            
+            // Actualizar contenido de idioma
+            document.getElementById('contenedor-es').classList.toggle('active', lang === 'es');
+            document.getElementById('contenedor-en').classList.toggle('active', lang === 'en');
+            
+            // Actualizar título y placeholders
+            document.getElementById('main-title').innerText = lang === 'es' ? "Informes Financieros y Económicos" : "Financial and Economic Reports";
+            document.getElementById('search-input').placeholder = lang === 'es' ? "Buscar informe..." : "Search report...";
+            
+            // Re-renderizar para actualizar Publicado/Published
+            renderizarLista(informesES, 'lista-espanol', lang === 'es' ? 'Ver Informe' : 'View Report');
+            renderizarLista(informesEN, 'lista-ingles', lang === 'es' ? 'Ver Informe' : 'View Report');
+
             updateMarkets();
             actualizarReloj();
         }
 
-        function formatearFecha(fechaISO) {
-            const partes = fechaISO.split('-');
-            return `${partes[2]}/${partes[1]}/${partes[0]}`;
-        }
-
-        function cargarPDF(url, nombre) {
-            const visor = document.getElementById('visor-container');
-            const frame = document.getElementById('pdf-frame');
-            const tituloVisor = document.getElementById('titulo-visor');
-            visor.style.display = "block";
-            frame.src = url;
-            tituloVisor.innerText = nombre;
-            visor.scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function renderizarLista(lista, contenedorID, textoBoton) {
-            try {
-                lista.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
-                const contenedor = document.getElementById(contenedorID);
-                contenedor.innerHTML = ""; 
-                const labelFecha = currentLang === 'es' ? 'Publicado' : 'Published';
-                
-                lista.forEach(informe => {
-                    const card = document.createElement('div');
-                    card.className = 'report-card';
-                    card.innerHTML = `
-                        <div class="report-info">
-                            <h3>${informe.nombre}</h3>
-                            <span class="report-date">${labelFecha}: ${formatearFecha(informe.fecha)}</span>
-                        </div>
-                        <button class="btn-view" onclick="cargarPDF('${informe.url}', '${informe.nombre}')">
-                            ${textoBoton}
-                        </button>
-                    `;
-                    contenedor.appendChild(card);
-                });
-                filtrarInformes();
-            } catch (e) { console.error(e); }
-        }
-
-        function showTopTen() {
-            setContentVisibility(false);
-            
-            const contentArea = document.getElementById('main-content-area');
+        function renderTopTenList() {
+            const contentArea = document.getElementById('top-ten-view');
             const text = topTenText[currentLang];
             
             let html = `
@@ -702,46 +668,46 @@
             contentArea.innerHTML = html;
         }
 
-        function showReports() {
-            setContentVisibility(true);
-            renderizarLista(informesES, 'lista-espanol', 'Ver Informe');
-            renderizarLista(informesEN, 'lista-ingles', 'View Report');
+
+        function renderizarLista(lista, contenedorID, textoBoton) {
+            try {
+                lista.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+                const contenedor = document.getElementById(contenedorID);
+                contenedor.innerHTML = ""; 
+                const labelFecha = currentLang === 'es' ? 'Publicado' : 'Published';
+                
+                lista.forEach(informe => {
+                    const card = document.createElement('div');
+                    card.className = 'report-card';
+                    card.innerHTML = `
+                        <div class="report-info">
+                            <h3>${informe.nombre}</h3>
+                            <span class="report-date">${labelFecha}: ${formatearFecha(informe.fecha)}</span>
+                        </div>
+                        <button class="btn-view" onclick="cargarPDF('${informe.url}', '${informe.nombre}')">
+                            ${textoBoton}
+                        </button>
+                    `;
+                    contenedor.appendChild(card);
+                });
+                filtrarInformes();
+            } catch (e) { console.error(e); }
         }
 
-        function setContentVisibility(showReports) {
-            document.getElementById('contenedor-es').style.display = 'none';
-            document.getElementById('contenedor-en').style.display = 'none';
-            document.getElementById('search-input').style.display = showReports ? 'block' : 'none';
-            document.getElementById('visor-container').style.display = 'none';
-            
-            const btnTop = document.getElementById('btn-top-ten');
-            const btnEs = document.getElementById('btn-es');
-            const btnEn = document.getElementById('btn-en');
-            
-            btnTop.classList.toggle('active', !showReports);
-            btnEs.classList.toggle('active', showReports && currentLang === 'es');
-            btnEn.classList.toggle('active', showReports && currentLang === 'en');
-            
-            // Si es Top Ten, movemos el contenido generado directamente al área principal
-            if (!showReports) {
-                // El contenido se renderiza dentro de showTopTen()
-            } else {
-                // Si son informes, debemos asegurar que el área principal contenga los contenedores de idioma
-                const contentArea = document.getElementById('main-content-area');
-                
-                // Mantenemos los contenedores de idioma en el DOM
-                const esContainer = document.getElementById('contenedor-es');
-                const enContainer = document.getElementById('contenedor-en');
 
-                // Si el área principal fue reemplazada por la tabla, la volvemos a montar
-                if (contentArea.children.length === 0 || contentArea.children[0].className === 'top-ten-table') {
-                    contentArea.innerHTML = '';
-                    contentArea.appendChild(esContainer);
-                    contentArea.appendChild(enContainer);
-                }
+        function formatearFecha(fechaISO) {
+            const partes = fechaISO.split('-');
+            return `${partes[2]}/${partes[1]}/${partes[0]}`;
+        }
 
-                document.getElementById(currentLang === 'es' ? 'contenedor-es' : 'contenedor-en').style.display = 'block';
-            }
+        function cargarPDF(url, nombre) {
+            const visor = document.getElementById('visor-container');
+            const frame = document.getElementById('pdf-frame');
+            const tituloVisor = document.getElementById('titulo-visor');
+            visor.style.display = "block";
+            frame.src = url;
+            tituloVisor.innerText = nombre;
+            visor.scrollIntoView({ behavior: 'smooth' });
         }
 
 
@@ -758,10 +724,14 @@
         // INICIALIZACIÓN
         // ==========================================
         
+        // Inicializar botones de informe con el idioma actual
         renderizarLista(informesES, 'lista-espanol', 'Ver Informe');
         renderizarLista(informesEN, 'lista-ingles', 'View Report');
-        showReports(); 
         
+        // Mostrar la vista de informes por defecto
+        showReports('es'); 
+        
+        // Iniciar reloj
         setInterval(actualizarReloj, 1000);
         actualizarReloj();
     </script>
