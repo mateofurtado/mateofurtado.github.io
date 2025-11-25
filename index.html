@@ -15,333 +15,10 @@
             min-height: 100vh;
         }
 
+        /* --- BARRA SUPERIOR --- */
         .top-bar {
             background-color: #fff;
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-
-        .lang-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .lang-btn {
-            border: 2px solid #003366;
-            background: transparent;
-            color: #003366;
-            padding: 5px 15px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 0.9rem;
-            transition: all 0.3s;
-        }
-
-        .lang-btn:hover {
-            background-color: #e6efff;
-        }
-
-        .lang-btn.active {
-            background-color: #003366;
-            color: white;
-        }
-
-        .market-status {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: bold;
-            font-size: 0.9rem;
-            color: #333;
-            background-color: #f8f9fa;
-            padding: 6px 15px;
-            border-radius: 20px;
-            border: 1px solid #eee;
-        }
-
-        .status-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background-color: #95a5a6;
-        }
-
-        .status-dot.open {
-            background-color: #27ae60;
-            box-shadow: 0 0 5px #27ae60;
-        }
-
-        .status-dot.closed {
-            background-color: #c0392b;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 30px 20px;
-            flex: 1;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        h1 {
-            color: #003366;
-            border-bottom: 3px solid #003366;
-            padding-bottom: 15px;
-            margin-top: 10px;
-            text-align: center;
-        }
-
-        .list-container {
-            display: none;
-            animation: fadeIn 0.5s;
-        }
-
-        .list-container.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .report-card {
-            background: white;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-left: 5px solid #004080;
-            transition: transform 0.2s;
-        }
-        
-        .report-card:hover {
-            transform: translateY(-2px);
-        }
-
-        .report-info h3 {
-            margin: 0 0 8px 0;
-            font-size: 1.2rem;
-            color: #004080;
-        }
-
-        .report-date {
-            color: #666;
-            font-size: 0.9rem;
-            display: block;
-        }
-
-        .btn-view {
-            background-color: #0056b3;
-            color: white;
-            border: none;
-            cursor: pointer;
             padding: 10px 20px;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-        }
-
-        .btn-view:hover {
-            background-color: #004494;
-        }
-
-        #visor-container {
-            display: none;
-            margin-top: 30px;
-            background: white;
-            padding: 10px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.2);
-            border: 1px solid #ddd;
-        }
-
-        #titulo-visor {
-            color: #003366;
-            margin: 10px 0;
-            padding-left: 10px;
-        }
-
-        iframe {
-            width: 100%;
-            height: 700px;
-            border: none;
-            border-radius: 5px;
-            background-color: #eee;
-        }
-
-        .site-footer {
-            background-color: #003366;
-            color: white;
-            padding: 20px 40px;
-            font-weight: bold;
-            font-size: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        @media (max-width: 600px) {
-            .site-footer {
-                flex-direction: column;
-                gap: 10px;
-            }
-            .top-bar {
-                flex-direction: column;
-                gap: 15px;
-            }
-        }
-    </style>
-</head>
-<body>
-
-    <div class="top-bar">
-        <div class="lang-buttons">
-            <button class="lang-btn active" onclick="cambiarIdioma('es')" id="btn-es">Español</button>
-            <button class="lang-btn" onclick="cambiarIdioma('en')" id="btn-en">English</button>
-        </div>
-        
-        <div class="market-status">
-            <span class="status-dot" id="market-dot"></span>
-            <span id="market-text">NYSE: ...</span>
-        </div>
-    </div>
-
-    <div class="container">
-        <h1 id="main-title">Informes Financieros y Económicos</h1>
-
-        <div id="contenedor-es" class="list-container active">
-            <div id="lista-espanol"></div>
-        </div>
-
-        <div id="contenedor-en" class="list-container">
-            <div id="lista-ingles"></div>
-        </div>
-
-        <div id="visor-container">
-            <h2 id="titulo-visor">...</h2>
-            <iframe id="pdf-frame" src=""></iframe>
-        </div>
-    </div>
-
-    <footer class="site-footer">
-        <span>Mateo Furtado - Financial Analyst</span>
-        <span id="reloj-vivo">--:--:--</span>
-    </footer>
-
-    <script>
-        const informesES = [
-            { nombre: "Reporte de Crédito 3.0", fecha: "2025-11-24", url: "CREDITO 3.0.pdf" }
-        ];
-
-        const informesEN = [
-            { nombre: "Credit Report 3.0", fecha: "2025-11-24", url: "CREDITO 3.0.pdf" }
-        ];
-
-        let currentLang = 'es';
-
-        function checkMarketStatus() {
-            const now = new Date();
-            const nyTimeStr = now.toLocaleString("en-US", {timeZone: "America/New_York"});
-            const nyTime = new Date(nyTimeStr);
-            
-            const day = nyTime.getDay();
-            const hour = nyTime.getHours();
-            const minute = nyTime.getMinutes();
-            const totalMinutes = hour * 60 + minute;
-            
-            const openTime = 9 * 60 + 30;
-            const closeTime = 16 * 60;
-            
-            let isOpen = false;
-
-            if (day >= 1 && day <= 5) {
-                if (totalMinutes >= openTime && totalMinutes < closeTime) {
-                    isOpen = true;
-                }
-            }
-
-            const dot = document.getElementById('market-dot');
-            const text = document.getElementById('market-text');
-            
-            const labelOpen = currentLang === 'es' ? 'Abierto' : 'Open';
-            const labelClosed = currentLang === 'es' ? 'Cerrado' : 'Closed';
-
-            if (isOpen) {
-                dot.className = 'status-dot open';
-                text.innerText = `NYSE: ${labelOpen}`;
-                text.style.color = '#27ae60';
-            } else {
-                dot.className = 'status-dot closed';
-                text.innerText = `NYSE: ${labelClosed}`;
-                text.style.color = '#c0392b';
-            }
-        }
-
-        function cambiarIdioma(idioma) {
-            currentLang = idioma;
-            const contES = document.getElementById('contenedor-es');
-            const contEN = document.getElementById('contenedor-en');
-            const btnES = document.getElementById('btn-es');
-            const btnEN = document.getElementById('btn-en');
-            const titulo = document.getElementById('main-title');
-            const visor = document.getElementById('visor-container');
-
-            visor.style.display = 'none';
-
-            if (idioma === 'es') {
-                contES.classList.add('active');
-                contEN.classList.remove('active');
-                btnES.classList.add('active');
-                btnEN.classList.remove('active');
-                titulo.innerText = "Informes Financieros y Económicos";
-            } else {
-                contEN.classList.add('active');
-                contES.classList.remove('active');
-                btnEN.classList.add('active');
-                btnES.classList.remove('active');
-                titulo.innerText = "Financial and Economic Reports";
-            }
-            checkMarketStatus();
-        }
-
-        function formatearFecha(fechaISO) {
-            const partes = fechaISO.split('-');
-            return `${partes[2]}/${partes[1]}/${partes[0]}`;
-        }
-
-        function cargarPDF(url, nombre) {
-            const visor = document.getElementById('visor-container');
-            const frame = document<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mateo Furtado - Portfolio</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
-            color: #333;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        .top-bar {
-            background-color: #fff;
-            padding: 15px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -350,7 +27,7 @@
             gap: 15px;
         }
 
-        .lang-buttons {
+        .left-section {
             display: flex;
             gap: 10px;
         }
@@ -363,7 +40,7 @@
             border-radius: 20px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             transition: all 0.3s;
         }
 
@@ -376,23 +53,23 @@
             color: white;
         }
 
-        .markets-container {
+        /* --- MERCADOS --- */
+        .markets-grid {
             display: flex;
-            gap: 15px;
-            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
-        .market-status {
+        .market-pill {
             display: flex;
             align-items: center;
             gap: 6px;
+            font-size: 0.75rem;
             font-weight: bold;
-            font-size: 0.85rem;
-            color: #333;
             background-color: #f8f9fa;
-            padding: 5px 12px;
-            border-radius: 15px;
-            border: 1px solid #eee;
+            padding: 4px 10px;
+            border-radius: 12px;
+            border: 1px solid #e1e4e8;
             white-space: nowrap;
         }
 
@@ -400,20 +77,25 @@
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background-color: #95a5a6;
+            background-color: #bdc3c7; /* Gris por defecto */
         }
 
         .status-dot.open {
-            background-color: #27ae60;
-            box-shadow: 0 0 5px #27ae60;
+            background-color: #27ae60; /* Verde */
+            box-shadow: 0 0 4px #27ae60;
         }
 
         .status-dot.closed {
-            background-color: #c0392b;
+            background-color: #c0392b; /* Rojo */
         }
 
+        .market-name {
+            color: #555;
+        }
+
+        /* --- CONTENIDO --- */
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
             padding: 30px 20px;
             flex: 1;
@@ -430,12 +112,12 @@
         }
 
         .list-container {
-            display: none;
-            animation: fadeIn 0.5s;
+            display: none; /* JS lo activa */
         }
 
         .list-container.active {
             display: block;
+            animation: fadeIn 0.5s;
         }
 
         @keyframes fadeIn {
@@ -455,21 +137,20 @@
             border-left: 5px solid #004080;
             transition: transform 0.2s;
         }
-        
+
         .report-card:hover {
             transform: translateY(-2px);
         }
 
         .report-info h3 {
-            margin: 0 0 8px 0;
-            font-size: 1.2rem;
+            margin: 0 0 5px 0;
+            font-size: 1.1rem;
             color: #004080;
         }
 
         .report-date {
             color: #666;
             font-size: 0.9rem;
-            display: block;
         }
 
         .btn-view {
@@ -477,18 +158,17 @@
             color: white;
             border: none;
             cursor: pointer;
-            padding: 10px 20px;
-            border-radius: 6px;
+            padding: 8px 16px;
+            border-radius: 5px;
             font-weight: bold;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-            white-space: nowrap;
+            transition: background 0.3s;
         }
 
         .btn-view:hover {
             background-color: #004494;
         }
 
+        /* --- VISOR --- */
         #visor-container {
             display: none;
             margin-top: 30px;
@@ -509,33 +189,26 @@
             width: 100%;
             height: 700px;
             border: none;
-            border-radius: 5px;
             background-color: #eee;
         }
 
+        /* --- FOOTER --- */
         .site-footer {
             background-color: #003366;
             color: white;
-            padding: 20px 40px;
+            padding: 15px 40px;
             font-weight: bold;
-            font-size: 1rem;
+            font-size: 0.9rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        @media (max-width: 850px) {
+        @media (max-width: 768px) {
             .top-bar {
-                justify-content: center;
                 flex-direction: column;
+                align-items: center;
             }
-            .markets-container {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-        }
-
-        @media (max-width: 600px) {
             .site-footer {
                 flex-direction: column;
                 gap: 10px;
@@ -546,27 +219,31 @@
 <body>
 
     <div class="top-bar">
-        <div class="lang-buttons">
+        <div class="left-section">
             <button class="lang-btn active" onclick="cambiarIdioma('es')" id="btn-es">Español</button>
             <button class="lang-btn" onclick="cambiarIdioma('en')" id="btn-en">English</button>
         </div>
-        
-        <div class="markets-container">
-            <div class="market-status">
+
+        <div class="markets-grid">
+            <div class="market-pill">
                 <span class="status-dot" id="dot-nyse"></span>
-                <span id="text-nyse">NYSE</span>
+                <span class="market-name">NYSE</span>
+                <span id="status-nyse">...</span>
             </div>
-            <div class="market-status">
+            <div class="market-pill">
                 <span class="status-dot" id="dot-lse"></span>
-                <span id="text-lse">London</span>
+                <span class="market-name">LSE</span>
+                <span id="status-lse">...</span>
             </div>
-            <div class="market-status">
-                <span class="status-dot" id="dot-tse"></span>
-                <span id="text-tse">Japan</span>
+            <div class="market-pill">
+                <span class="status-dot" id="dot-jpx"></span>
+                <span class="market-name">JPX</span>
+                <span id="status-jpx">...</span>
             </div>
-            <div class="market-status">
+            <div class="market-pill">
                 <span class="status-dot" id="dot-sse"></span>
-                <span id="text-sse">China</span>
+                <span class="market-name">SSE</span>
+                <span id="status-sse">...</span>
             </div>
         </div>
     </div>
@@ -594,6 +271,9 @@
     </footer>
 
     <script>
+        // ==========================================
+        // 1. TUS INFORMES
+        // ==========================================
         const informesES = [
             { nombre: "Reporte de Crédito 3.0", fecha: "2025-11-24", url: "CREDITO 3.0.pdf" }
         ];
@@ -604,96 +284,91 @@
 
         let currentLang = 'es';
 
-        function isMarketOpen(timezone, openHour, openMin, closeHour, closeMin, lunchStartH = -1, lunchEndH = -1) {
-            const now = new Date();
-            const localStr = now.toLocaleString("en-US", {timeZone: timezone});
-            const localTime = new Date(localStr);
-            
-            const day = localTime.getDay();
-            if (day === 0 || day === 6) return false; 
+        // ==========================================
+        // 2. LÓGICA DE MERCADOS (NUEVA Y ROBUSTA)
+        // ==========================================
+        
+        function getMarketStatus(timeZone, intervals) {
+            try {
+                // Obtener hora actual en la zona horaria del mercado
+                const now = new Date();
+                const formatter = new Intl.DateTimeFormat('en-US', {
+                    timeZone: timeZone,
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    hour12: false,
+                    weekday: 'short'
+                });
+                
+                const parts = formatter.formatToParts(now);
+                const hour = parseInt(parts.find(p => p.type === 'hour').value);
+                const minute = parseInt(parts.find(p => p.type === 'minute').value);
+                const weekday = parts.find(p => p.type === 'weekday').value;
 
-            const h = localTime.getHours();
-            const m = localTime.getMinutes();
-            const totalM = h * 60 + m;
-            const openM = openHour * 60 + openMin;
-            const closeM = closeHour * 60 + closeMin;
+                // Si es fin de semana (Sat o Sun), cerrado
+                if (weekday === 'Sat' || weekday === 'Sun') return false;
 
-            if (lunchStartH !== -1) {
-                const lStart = lunchStartH * 60;
-                const lEnd = lunchEndH * 60 + (lunchEndH === 12 && lunchEndH < lunchStartH ? 30 : 0); // Ajuste simple
-                // Ajuste preciso para Asia
-                const lunchStartTotal = lunchStartH * 60 + (timezone.includes('Tokyo') ? 30 : 30); 
-                const lunchEndTotal = lunchEndH * 60 + (timezone.includes('Tokyo') ? 30 : 0);
+                const currentMinutes = hour * 60 + minute;
+                
+                // Verificar si está dentro de algún intervalo de apertura
+                // intervals es un array de arrays: [[inicio, fin], [inicio, fin]]
+                for (let interval of intervals) {
+                    if (currentMinutes >= interval[0] && currentMinutes < interval[1]) {
+                        return true;
+                    }
+                }
+                return false;
 
-                // Re-calculo manual para Tokyo/China específico abajo
+            } catch (e) {
+                console.error("Error calculando mercado:", timeZone, e);
+                return false; // Si falla, asumimos cerrado para no romper la web
             }
-
-            return totalM >= openM && totalM < closeM;
         }
 
-        function checkMarkets() {
-            const now = new Date();
+        function updateMarkets() {
+            // Definir horarios en minutos (Hora * 60 + Minutos)
             
-            // 1. NYSE (America/New_York): 09:30 - 16:00
-            updateMarketUI('nyse', 'America/New_York', 9, 30, 16, 0);
-
-            // 2. London (Europe/London): 08:00 - 16:30
-            updateMarketUI('lse', 'Europe/London', 8, 0, 16, 30);
-
-            // 3. Japan (Asia/Tokyo): 09:00 - 11:30 & 12:30 - 15:00
-            updateMarketUI_Asia('tse', 'Asia/Tokyo', 9, 0, 11, 30, 12, 30, 15, 0);
-
-            // 4. China (Asia/Shanghai): 09:30 - 11:30 & 13:00 - 15:00
-            updateMarketUI_Asia('sse', 'Asia/Shanghai', 9, 30, 11, 30, 13, 0, 15, 0);
-        }
-
-        function updateMarketUI(id, zone, oh, om, ch, cm) {
-            const now = new Date();
-            const time = new Date(now.toLocaleString("en-US", {timeZone: zone}));
-            const day = time.getDay();
-            const mins = time.getHours() * 60 + time.getMinutes();
-            const open = oh * 60 + om;
-            const close = ch * 60 + cm;
+            // NYSE: 9:30 - 16:00
+            const nyseOpen = getMarketStatus('America/New_York', [[9*60+30, 16*60]]);
             
-            let isOpen = (day >= 1 && day <= 5 && mins >= open && mins < close);
-            setUI(id, isOpen);
-        }
-
-        function updateMarketUI_Asia(id, zone, o1h, o1m, c1h, c1m, o2h, o2m, c2h, c2m) {
-            const now = new Date();
-            const time = new Date(now.toLocaleString("en-US", {timeZone: zone}));
-            const day = time.getDay();
-            const mins = time.getHours() * 60 + time.getMinutes();
+            // Londres: 08:00 - 16:30
+            const lseOpen = getMarketStatus('Europe/London', [[8*60, 16*60+30]]);
             
-            const open1 = o1h * 60 + o1m;
-            const close1 = c1h * 60 + c1m;
-            const open2 = o2h * 60 + o2m;
-            const close2 = c2h * 60 + c2m;
+            // Tokyo: 09:00 - 11:30 Y 12:30 - 15:00
+            const jpxOpen = getMarketStatus('Asia/Tokyo', [[9*60, 11*60+30], [12*60+30, 15*60]]);
+            
+            // Shanghai: 09:30 - 11:30 Y 13:00 - 15:00
+            const sseOpen = getMarketStatus('Asia/Shanghai', [[9*60+30, 11*60+30], [13*60, 15*60]]);
 
-            let isOpen = (day >= 1 && day <= 5) && ((mins >= open1 && mins < close1) || (mins >= open2 && mins < close2));
-            setUI(id, isOpen);
+            renderMarketUI('nyse', nyseOpen);
+            renderMarketUI('lse', lseOpen);
+            renderMarketUI('jpx', jpxOpen);
+            renderMarketUI('sse', sseOpen);
         }
 
-        function setUI(id, isOpen) {
+        function renderMarketUI(id, isOpen) {
             const dot = document.getElementById(`dot-${id}`);
-            const text = document.getElementById(`text-${id}`);
-            const labels = {
-                nyse: "NYSE", lse: "London", tse: "Japan", sse: "China"
-            };
+            const text = document.getElementById(`status-${id}`);
             
+            // Textos según idioma
             const labelOpen = currentLang === 'es' ? 'Abierto' : 'Open';
             const labelClosed = currentLang === 'es' ? 'Cerrado' : 'Closed';
 
             if (isOpen) {
                 dot.className = 'status-dot open';
-                text.innerText = `${labels[id]}: ${labelOpen}`;
+                text.innerText = labelOpen;
                 text.style.color = '#27ae60';
             } else {
                 dot.className = 'status-dot closed';
-                text.innerText = `${labels[id]}: ${labelClosed}`;
+                text.innerText = labelClosed;
                 text.style.color = '#c0392b';
             }
         }
+
+
+        // ==========================================
+        // 3. FUNCIONES GENERALES
+        // ==========================================
 
         function cambiarIdioma(idioma) {
             currentLang = idioma;
@@ -702,9 +377,9 @@
             const btnES = document.getElementById('btn-es');
             const btnEN = document.getElementById('btn-en');
             const titulo = document.getElementById('main-title');
-            const visor = document.getElementById('visor-container');
-
-            visor.style.display = 'none';
+            
+            // Ocultar visor al cambiar idioma
+            document.getElementById('visor-container').style.display = 'none';
 
             if (idioma === 'es') {
                 contES.classList.add('active');
@@ -719,7 +394,8 @@
                 btnES.classList.remove('active');
                 titulo.innerText = "Financial and Economic Reports";
             }
-            checkMarkets();
+            // Actualizar textos de mercados inmediatamente
+            updateMarkets();
         }
 
         function formatearFecha(fechaISO) {
@@ -739,45 +415,58 @@
         }
 
         function renderizarLista(lista, contenedorID, textoBoton) {
-            lista.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
-            const contenedor = document.getElementById(contenedorID);
-            
-            lista.forEach(informe => {
-                const card = document.createElement('div');
-                card.className = 'report-card';
-                card.innerHTML = `
-                    <div class="report-info">
-                        <h3>${informe.nombre}</h3>
-                        <span class="report-date">Publicado: ${formatearFecha(informe.fecha)}</span>
-                    </div>
-                    <button class="btn-view" onclick="cargarPDF('${informe.url}', '${informe.nombre}')">
-                        ${textoBoton}
-                    </button>
-                `;
-                contenedor.appendChild(card);
-            });
+            try {
+                lista.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+                const contenedor = document.getElementById(contenedorID);
+                contenedor.innerHTML = ""; // Limpiar antes de renderizar
+                
+                lista.forEach(informe => {
+                    const card = document.createElement('div');
+                    card.className = 'report-card';
+                    card.innerHTML = `
+                        <div class="report-info">
+                            <h3>${informe.nombre}</h3>
+                            <span class="report-date">Publicado: ${formatearFecha(informe.fecha)}</span>
+                        </div>
+                        <button class="btn-view" onclick="cargarPDF('${informe.url}', '${informe.nombre}')">
+                            ${textoBoton}
+                        </button>
+                    `;
+                    contenedor.appendChild(card);
+                });
+            } catch (e) {
+                console.error("Error renderizando lista:", e);
+            }
         }
 
         function actualizarReloj() {
-            const ahora = new Date();
-            const opciones = { 
-                weekday: 'short', 
-                year: 'numeric', 
-                month: 'numeric', 
-                day: 'numeric', 
-                hour: '2-digit', 
-                minute: '2-digit', 
-                second: '2-digit' 
-            };
-            document.getElementById('reloj-vivo').innerText = ahora.toLocaleDateString('es-ES', opciones);
-            checkMarkets();
+            try {
+                const ahora = new Date();
+                const opciones = { 
+                    weekday: 'short', year: 'numeric', month: 'numeric', day: 'numeric', 
+                    hour: '2-digit', minute: '2-digit', second: '2-digit' 
+                };
+                // Usamos try-catch también aquí por seguridad
+                document.getElementById('reloj-vivo').innerText = ahora.toLocaleDateString(currentLang === 'es' ? 'es-ES' : 'en-US', opciones);
+                
+                // Chequear mercados cada segundo
+                updateMarkets();
+            } catch (e) {
+                console.error("Error en reloj:", e);
+            }
         }
 
-        setInterval(actualizarReloj, 1000);
-        actualizarReloj();
-
+        // ==========================================
+        // 4. INICIALIZACIÓN
+        // ==========================================
+        
+        // Render inicial
         renderizarLista(informesES, 'lista-espanol', 'Ver Informe');
         renderizarLista(informesEN, 'lista-ingles', 'View Report');
+        
+        // Iniciar reloj
+        setInterval(actualizarReloj, 1000);
+        actualizarReloj();
 
     </script>
 
